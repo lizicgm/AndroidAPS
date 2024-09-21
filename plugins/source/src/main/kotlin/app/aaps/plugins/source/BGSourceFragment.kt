@@ -199,6 +199,7 @@ class BGSourceFragment : DaggerFragment(), MenuProvider {
                         R.string.glimp              -> Sources.Glimp
                         R.string.mm640g             -> Sources.MM640g
                         R.string.ns_client_bg       -> Sources.NSClientSource
+                        R.string.firestore_bg       -> Sources.Firestore
                         R.string.poctech            -> Sources.PocTech
                         R.string.tomato             -> Sources.Tomato
                         R.string.glunovo            -> Sources.Glunovo

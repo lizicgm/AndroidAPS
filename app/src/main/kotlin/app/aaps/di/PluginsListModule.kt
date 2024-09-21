@@ -38,6 +38,7 @@ import app.aaps.plugins.smoothing.ExponentialSmoothingPlugin
 import app.aaps.plugins.smoothing.NoSmoothingPlugin
 import app.aaps.plugins.source.AidexPlugin
 import app.aaps.plugins.source.DexcomPlugin
+import app.aaps.plugins.source.FirestoreBGSourcePlugin
 import app.aaps.plugins.source.GlimpPlugin
 import app.aaps.plugins.source.GlunovoPlugin
 import app.aaps.plugins.source.IntelligoPlugin
@@ -387,6 +388,12 @@ abstract class PluginsListModule {
     @IntoMap
     @IntKey(410)
     abstract fun bindNSClientSourcePlugin(plugin: NSClientSourcePlugin): PluginBase
+
+    @Binds
+    @AllConfigs
+    @IntoMap
+    @IntKey(411)
+    abstract fun bindFirestoreSourcePlugin(plugin: FirestoreBGSourcePlugin): PluginBase
 
     @Binds
     @AllConfigs

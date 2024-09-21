@@ -5,6 +5,7 @@ interface Config {
 
     val SUPPORTED_NS_VERSION: Int
     val APS: Boolean
+    val FIRESTORE: Boolean
     val NSCLIENT: Boolean // aapsclient || aapsclient2
     val NSCLIENT1: Boolean // aapsclient
     val NSCLIENT2: Boolean // aapsclient2

@@ -150,6 +150,7 @@ data class UserEntry(
         Glimp,
         MM640g,
         NSClientSource,
+        Firestore,
         PocTech,
         Tomato,
         Glunovo,

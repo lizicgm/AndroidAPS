@@ -13,6 +13,10 @@ android {
 
 
 dependencies {
+
+    implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
+    implementation("com.google.firebase:firebase-analytics")
+
     implementation(project(":database:entities"))
     implementation(project(":database:impl"))
     implementation(project(":shared:impl"))
@@ -21,6 +25,7 @@ dependencies {
     implementation(project(":core:nssdk"))
     implementation(project(":core:ui"))
     implementation(project(":core:utils"))
+    implementation("com.google.firebase:firebase-firestore-ktx:25.1.0")
 
     testImplementation(Libs.AndroidX.Work.testing)
 

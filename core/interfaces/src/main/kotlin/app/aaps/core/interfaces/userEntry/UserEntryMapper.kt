@@ -116,6 +116,7 @@ class UserEntryMapper {
         Glimp(UserEntry.Sources.Glimp),
         MM640g(UserEntry.Sources.MM640g),
         NSClientSource(UserEntry.Sources.BG),
+        Firestore(UserEntry.Sources.BG),
         PocTech(UserEntry.Sources.PocTech),
         Tomato(UserEntry.Sources.Tomato),
         Xdrip(UserEntry.Sources.Xdrip),

@@ -31,6 +31,8 @@ class ConfigImpl @Inject constructor(
     override val APPLICATION_ID: String = BuildConfig.APPLICATION_ID
     override val DEBUG = BuildConfig.DEBUG
 
+    override val FIRESTORE = true
+
     override val currentDeviceModelString =
         Build.MANUFACTURER + " " + Build.MODEL + " (" + Build.DEVICE + ")"
     override val appName: Int = R.string.app_name

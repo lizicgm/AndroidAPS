@@ -71,6 +71,7 @@ class UserEntryPresentationHelperImpl @Inject constructor(
         Sources.Glimp               -> R.drawable.ic_glimp
         Sources.MM640g              -> R.drawable.ic_generic_cgm
         Sources.NSClientSource      -> R.drawable.ic_nsclient_bg
+        Sources.Firestore           -> R.drawable.ic_firebase_bg
         Sources.PocTech             -> R.drawable.ic_poctech
         Sources.Tomato              -> R.drawable.ic_sensor
         Sources.Glunovo             -> R.drawable.ic_glunovo

@@ -163,7 +163,11 @@ allprojects {
 }
 
 dependencies {
+    implementation("com.google.firebase:firebase-firestore-ktx:25.1.0")
     wearApp(project(":wear"))
+
+    implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
+    implementation("com.google.firebase:firebase-analytics")
 
     // in order to use internet"s versions you"d need to enable Jetifier again
     // https://github.com/nightscout/graphview.git
@@ -221,15 +225,15 @@ dependencies {
     api(Libs.Rx.rxDogTag)
 }
 
-println("-------------------")
-println("isMaster: ${isMaster()}")
-println("gitAvailable: ${gitAvailable()}")
-println("allCommitted: ${allCommitted()}")
-println("-------------------")
-if (isMaster() && !gitAvailable()) {
-    throw GradleException("GIT system is not available. On Windows try to run Android Studio as an Administrator. Check if GIT is installed and Studio have permissions to use it")
-}
-if (isMaster() && !allCommitted()) {
-    throw GradleException("There are uncommitted changes. Clone sources again as described in wiki and do not allow gradle update")
-}
+// println("-------------------")
+// println("isMaster: ${isMaster()}")
+// println("gitAvailable: ${gitAvailable()}")
+// println("allCommitted: ${allCommitted()}")
+// println("-------------------")
+// if (isMaster() && !gitAvailable()) {
+//     throw GradleException("GIT system is not available. On Windows try to run Android Studio as an Administrator. Check if GIT is installed and Studio have permissions to use it")
+// }
+// if (isMaster() && !allCommitted()) {
+//     throw GradleException("There are uncommitted changes. Clone sources again as described in wiki and do not allow gradle update")
+// }
 
