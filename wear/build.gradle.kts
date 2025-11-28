@@ -3,9 +3,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 plugins {
+    alias(libs.plugins.ksp)
     id("com.android.application")
     id("kotlin-android")
-    id("kotlin-kapt")
     id("android-app-dependencies")
     id("test-app-dependencies")
     id("jacoco-app-dependencies")
@@ -17,19 +17,16 @@ repositories {
 }
 
 fun generateGitBuild(): String {
-    val stringBuilder: StringBuilder = StringBuilder()
     try {
-        val stdout = ByteArrayOutputStream()
-        exec {
-            commandLine("git", "describe", "--always")
-            standardOutput = stdout
-        }
-        val commitObject = stdout.toString().trim()
-        stringBuilder.append(commitObject)
-    } catch (ignored: Exception) {
-        stringBuilder.append("NoGitSystemAvailable")
+        val processBuilder = ProcessBuilder("git", "describe", "--always")
+        val output = File.createTempFile("git-build", "")
+        processBuilder.redirectOutput(output)
+        val process = processBuilder.start()
+        process.waitFor()
+        return output.readText().trim()
+    } catch (_: Exception) {
+        return "NoGitSystemAvailable"
     }
-    return stringBuilder.toString()
 }
 
 fun generateDate(): String {
@@ -100,31 +97,34 @@ allprojects {
 dependencies {
     implementation(project(":shared:impl"))
     implementation(project(":core:interfaces"))
+    implementation(project(":core:keys"))
+    implementation(project(":core:ui"))
+    implementation(project(":core:data"))
 
-    implementation(Libs.AndroidX.appCompat)
-    implementation(Libs.AndroidX.core)
-    implementation(Libs.AndroidX.legacySupport)
-    implementation(Libs.AndroidX.preference)
-    implementation(Libs.AndroidX.Wear.wear)
-    implementation(Libs.AndroidX.Wear.tiles)
-    implementation(Libs.AndroidX.constraintLayout)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.legacy.support)
+    implementation(libs.androidx.preference)
+    implementation(libs.androidx.wear)
+    implementation(libs.androidx.wear.tiles)
+    implementation(libs.androidx.constraintlayout)
 
     testImplementation(project(":shared:tests"))
 
-    compileOnly(Libs.Google.Android.Wearable.wearable)
-    implementation(Libs.Google.Android.Wearable.wearableSupport)
-    implementation(Libs.Google.Android.PlayServices.wearable)
+    compileOnly(libs.com.google.android.wearable)
+    implementation(libs.com.google.android.wearable.support)
+    implementation(libs.com.google.android.gms.playservices.wearable)
     implementation(files("${rootDir}/wear/libs/ustwo-clockwise-debug.aar"))
     implementation(files("${rootDir}/wear/libs/wearpreferenceactivity-0.5.0.aar"))
     implementation(files("${rootDir}/wear/libs/hellocharts-library-1.5.8.aar"))
 
-    implementation(Libs.KotlinX.coroutinesCore)
-    implementation(Libs.KotlinX.coroutinesAndroid)
-    implementation(Libs.KotlinX.coroutinesGuava)
-    implementation(Libs.KotlinX.coroutinesPlayServices)
-    implementation(Libs.KotlinX.datetime)
-    implementation(Libs.Kotlin.stdlibJdk8)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.guava)
+    implementation(libs.kotlinx.coroutines.play.services)
+    implementation(libs.kotlinx.datetime)
+    implementation(libs.kotlin.stdlib.jdk8)
 
-    kapt(Libs.Dagger.androidProcessor)
-    kapt(Libs.Dagger.compiler)
+    ksp(libs.com.google.dagger.android.processor)
+    ksp(libs.com.google.dagger.compiler)
 }

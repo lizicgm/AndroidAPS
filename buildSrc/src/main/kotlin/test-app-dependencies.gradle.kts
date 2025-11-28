@@ -8,20 +8,20 @@ plugins {
 
 dependencies {
     testImplementation(kotlin("test"))
-    testImplementation(Libs.JUnit.jupiter)
-    testImplementation(Libs.JUnit.jupiterApi)
-    testImplementation(Libs.json)
-    testImplementation(Libs.Mockito.jupiter)
-    testImplementation(Libs.Mockito.kotlin)
-    testImplementation(Libs.jodaTime)
-    testImplementation(Libs.Google.truth)
-    testImplementation(Libs.jsonAssert)
+    testImplementationFromCatalog("org-junit-jupiter")
+    testImplementationFromCatalog("org.junit-jupiter-api")
+    testImplementationFromCatalog("org-json")
+    testImplementationFromCatalog("org-mockito-junit-jupiter")
+    testImplementationFromCatalog("org-mockito-kotlin")
+    testImplementationFromCatalog("joda-time")
+    testImplementationFromCatalog("com-google-truth")
+    testImplementationFromCatalog("org-skyscreamer-jsonassert")
 
-    androidTestImplementation(Libs.AndroidX.Test.espressoCore)
-    androidTestImplementation(Libs.AndroidX.Test.extKtx)
-    androidTestImplementation(Libs.AndroidX.Test.rules)
-    androidTestImplementation(Libs.AndroidX.Test.uiAutomator)
-    androidTestImplementation(Libs.Google.truth)
+    androidTestImplementationFromCatalog("androidx-espresso-core")
+    androidTestImplementationFromCatalog("androidx-test-ext")
+    androidTestImplementationFromCatalog("androidx-test-rules")
+    androidTestImplementationFromCatalog("com-google-truth")
+    androidTestImplementationFromCatalog("androidx-uiautomator")
 }
 
 tasks.withType<Test> {

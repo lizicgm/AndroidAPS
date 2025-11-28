@@ -6,6 +6,7 @@
 */output-metadata.json
 /build
 /captures
+/java_pid*
 *.apk
 build/
 !.idea/dictionaries/project-dictionary.xml
@@ -27,3 +28,6 @@ wear/aapsclient/*
 wear/aapsclient2/*
 wear/pumpcontrol/*
 app/google-services.json
+.kotlin/*
+/*.log
+*.preferences_pb

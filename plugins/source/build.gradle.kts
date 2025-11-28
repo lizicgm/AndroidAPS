@@ -1,7 +1,7 @@
 plugins {
-    id("com.android.library")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.ksp)
     id("kotlin-android")
-    id("kotlin-kapt")
     id("android-module-dependencies")
     id("test-module-dependencies")
     id("jacoco-module-dependencies")
@@ -13,24 +13,23 @@ android {
 
 
 dependencies {
-
     implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
-    implementation("com.google.firebase:firebase-analytics")
 
-    implementation(project(":database:entities"))
-    implementation(project(":database:impl"))
-    implementation(project(":shared:impl"))
+    implementation(project(":core:data"))
     implementation(project(":core:interfaces"))
-    implementation(project(":core:main"))
+    implementation(project(":core:keys"))
+    implementation(project(":core:objects"))
     implementation(project(":core:nssdk"))
     implementation(project(":core:ui"))
     implementation(project(":core:utils"))
     implementation("com.google.firebase:firebase-firestore-ktx:25.1.0")
+    implementation(project(":core:validators"))
+    implementation(project(":shared:impl"))
 
-    testImplementation(Libs.AndroidX.Work.testing)
+    testImplementation(libs.androidx.work.testing)
 
     testImplementation(project(":shared:tests"))
 
-    kapt(Libs.Dagger.compiler)
-    kapt(Libs.Dagger.androidProcessor)
+    ksp(libs.com.google.dagger.compiler)
+    ksp(libs.com.google.dagger.android.processor)
 }

@@ -11,6 +11,7 @@ import app.aaps.core.interfaces.rx.events.EventWearToMobile
 import app.aaps.core.interfaces.rx.weardata.EventData.ActionECarbsPreCheck
 import app.aaps.core.interfaces.utils.SafeParse.stringToDouble
 import app.aaps.core.interfaces.utils.SafeParse.stringToInt
+import app.aaps.core.keys.IntKey
 import app.aaps.wear.R
 import app.aaps.wear.interaction.utils.EditPlusMinusViewAdapter
 import app.aaps.wear.interaction.utils.PlusMinusEditText
@@ -37,8 +38,8 @@ class ECarbActivity : ViewSelectorActivity() {
         override fun getColumnCount(arg0: Int): Int = 4
         override fun getRowCount(): Int = 1
 
-        val increment1 = sp.getInt(R.string.key_carbs_button_increment_1, 5).toDouble()
-        val increment2 = sp.getInt(R.string.key_carbs_button_increment_2, 10).toDouble()
+        val increment1 = preferences.get(IntKey.OverviewCarbsButtonIncrement1).toDouble()
+        val increment2 = preferences.get(IntKey.OverviewCarbsButtonIncrement2).toDouble()
         val stepValues = listOf(1.0, increment1, increment2)
 
         override fun instantiateItem(container: ViewGroup, row: Int, col: Int): View = when (col) {
@@ -47,7 +48,7 @@ class ECarbActivity : ViewSelectorActivity() {
                 val view = viewAdapter.root
                 var initValue = stringToDouble(editCarbs?.editText?.text.toString(), 0.0)
                 val maxCarbs = sp.getInt(getString(R.string.key_treatments_safety_max_carbs), 48).toDouble()
-                editCarbs = PlusMinusEditText(viewAdapter, initValue, 0.0, maxCarbs, stepValues, DecimalFormat("0"), true, getString(R.string.action_carbs))
+                editCarbs = PlusMinusEditText(viewAdapter, initValue, 0.0, maxCarbs, stepValues, DecimalFormat("0"), true, getString(R.string.action_carbs_gram))
                 container.addView(view)
                 view.requestFocus()
                 view
@@ -57,7 +58,7 @@ class ECarbActivity : ViewSelectorActivity() {
                 val viewAdapter = EditPlusMinusViewAdapter.getViewAdapter(sp, applicationContext, container, false)
                 val view = viewAdapter.root
                 var initValue = stringToDouble(editStartTime?.editText?.text.toString(), 0.0)
-                editStartTime = PlusMinusEditText(viewAdapter, initValue, -60.0, 300.0, 15.0, DecimalFormat("0"), false, getString(R.string.action_start_min))
+                editStartTime = PlusMinusEditText(viewAdapter, initValue, -60.0, 300.0, 15.0, DecimalFormat("0"), false, getString(R.string.action_start_minutes))
                 container.addView(view)
                 view
             }
@@ -66,7 +67,7 @@ class ECarbActivity : ViewSelectorActivity() {
                 val viewAdapter = EditPlusMinusViewAdapter.getViewAdapter(sp, applicationContext, container, false)
                 val view = viewAdapter.root
                 var initValue = stringToDouble(editDuration?.editText?.text.toString(), 0.0)
-                editDuration = PlusMinusEditText(viewAdapter, initValue, 0.0, 8.0, 1.0, DecimalFormat("0"), false, getString(R.string.action_duration_h))
+                editDuration = PlusMinusEditText(viewAdapter, initValue, 0.0, 8.0, 1.0, DecimalFormat("0"), false, getString(R.string.action_duration_hours))
                 container.addView(view)
                 view
             }
