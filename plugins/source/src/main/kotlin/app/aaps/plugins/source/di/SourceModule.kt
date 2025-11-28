@@ -4,6 +4,7 @@ import app.aaps.core.interfaces.source.DexcomBoyda
 import app.aaps.core.interfaces.source.NSClientSource
 import app.aaps.core.interfaces.source.XDripSource
 import app.aaps.plugins.source.BGSourceFragment
+import app.aaps.plugins.source.FirestorePlugin
 import app.aaps.plugins.source.DexcomPlugin
 import app.aaps.plugins.source.GlimpPlugin
 import app.aaps.plugins.source.MM640gPlugin
@@ -29,6 +30,7 @@ abstract class SourceModule {
 
     @ContributesAndroidInjector abstract fun contributesBGSourceFragment(): BGSourceFragment
 
+    @ContributesAndroidInjector abstract fun contributesFirestoreWorker(): FirestorePlugin.FirebaseWorker
     @ContributesAndroidInjector abstract fun contributesXdripWorker(): XdripSourcePlugin.XdripSourceWorker
     @ContributesAndroidInjector abstract fun contributesDexcomWorker(): DexcomPlugin.DexcomWorker
     @ContributesAndroidInjector abstract fun contributesMM640gWorker(): MM640gPlugin.MM640gWorker

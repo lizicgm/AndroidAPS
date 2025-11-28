@@ -26,12 +26,10 @@ import com.google.firebase.firestore.QueryDocumentSnapshot
 import java.util.Calendar
 
 @Singleton
-class FirestoreBGSourcePlugin @Inject constructor(
-    injector: HasAndroidInjector,
+class FirestorePlugin @Inject constructor(
     rh: ResourceHelper,
     aapsLogger: AAPSLogger,
-    private val repository: AppRepository,
-    private val config: Config
+    config: Config
 ) : PluginBase(
     PluginDescription()
         .mainType(PluginType.BGSOURCE)
@@ -41,73 +39,80 @@ class FirestoreBGSourcePlugin @Inject constructor(
         .pluginName(R.string.firestore_bg)
         .shortName(R.string.firestore_bg_short)
         .description(R.string.description_source_firestore_client)
+        .alwaysEnabled(config.FIRESTORE)
         .setDefault(config.FIRESTORE),
-    aapsLogger, rh, injector
+    aapsLogger, rh
 ), BgSource {
 
-    private var listener: ListenerRegistration? = null
+    class FirebaseWorker(
+        context: Context,
+        params: WorkerParameters
+    ) : LoggingWorker(context, params, Dispatchers.IO) {
 
-    private val disposable = CompositeDisposable()
+        @Inject lateinit var injector: HasAndroidInjector
+        @Inject lateinit var firebasePlugin: FirestorePlugin
+        @Inject lateinit var persistenceLayer: PersistenceLayer
 
-    override fun advancedFilteringSupported(): Boolean = true
+        private var listener: ListenerRegistration? = null
+        private val disposable = CompositeDisposable()
 
-    override fun onStart() {
-        super.onStart()
-        aapsLogger.info(LTag.FIRESTORE, "starting listener")
-        if (listener != null) {
-            listener?.remove()
-        }
+        override fun advancedFilteringSupported(): Boolean = true
 
-        val cal = Calendar.getInstance()
-        cal.add(Calendar.MINUTE, -5)
-        val startDateMs = cal.timeInMillis
-
-        listener = Firebase.firestore.collection("entries").whereGreaterThan("date", startDateMs).addSnapshotListener { snapshots, e ->
-                if (e != null) {
-                    aapsLogger.error(LTag.FIRESTORE, "error listening to firebase", e)
-                    return@addSnapshotListener
-                }
-
-                for (dc in snapshots!!.documentChanges) {
-                    val type = dc.type
-                    aapsLogger.info(LTag.FIRESTORE, "got new snapshot event $type  ${dc.document.data}")
-                    if (type == DocumentChange.Type.ADDED) {
-                        handleNewData(dc.document)
-
-                    }
-                }
+        override fun onStart() {
+            super.onStart()
+            aapsLogger.info(LTag.FIRESTORE, "starting listener")
+            if (listener != null) {
+                listener?.remove()
             }
 
-    }
+            val cal = Calendar.getInstance()
+            cal.add(Calendar.MINUTE, -5)
+            val startDateMs = cal.timeInMillis
 
-    override fun onStop() {
-        super.onStop()
-        listener?.remove()
-        listener = null
-        disposable.clear()
-    }
+            listener = Firebase.firestore.collection("entries").whereGreaterThan("date", startDateMs).addSnapshotListener { snapshots, e ->
+                    if (e != null) {
+                        aapsLogger.error(LTag.FIRESTORE, "error listening to firebase", e)
+                        return@addSnapshotListener
+                    }
 
-    private fun handleNewData(snapshot: QueryDocumentSnapshot) {
-        if (!isEnabled()) return
-        aapsLogger.debug(LTag.FIRESTORE, "adding entry")
-        val data = snapshot.data
-        val glucoseValues = mutableListOf<TransactionGlucoseValue>()
-        glucoseValues += TransactionGlucoseValue(
-            timestamp = data["date"].toString().toLong(),
-            value = data["sgv"].toString().toDouble(),
-            noise = null,
-            raw = 0.0,
-            trendArrow = GlucoseValue.TrendArrow.fromString(data["direction"].toString()),
-            nightscoutId = data["identifier"].toString(),
-            sourceSensor = GlucoseValue.SourceSensor.fromString(data["device"].toString()),
-            isValid = true,
-            utcOffset = T.mins(data["utcOffset"].toString().toLong() ?: 0L).msecs()
-        )
+                    for (dc in snapshots!!.documentChanges) {
+                        val type = dc.type
+                        aapsLogger.info(LTag.FIRESTORE, "got new snapshot event $type  ${dc.document.data}")
+                        if (type == DocumentChange.Type.ADDED) {
+                            doWorkAndLog(dc.document)
 
-        disposable += repository.runTransactionForResult(CgmSourceTransaction(glucoseValues, emptyList(), null))
-            .subscribe({ savedValues ->
-                           savedValues.inserted.forEach { aapsLogger.debug(LTag.DATABASE, "Inserted bg $it") }
-                       }, { aapsLogger.error(LTag.DATABASE, "Error while saving values from firebase", it) }
+                        }
+                    }
+                }
+        }
+
+        override fun onStop() {
+            super.onStop()
+            listener?.remove()
+            listener = null
+            disposable.clear()
+        }
+
+        @SuppressLint("CheckResult")
+        override suspend fun doWorkAndLog(snapshot: QueryDocumentSnapshot): Result {
+            var ret = Result.success()
+            val inputData = snapshot.data
+
+            if (!firebasePlugin.isEnabled()) return Result.success(workDataOf("Result" to "Plugin not enabled"))
+            aapsLogger.debug(LTag.BGSOURCE, "Received Glimp Data: $inputData}")
+            val glucoseValues = mutableListOf<GV>()
+            glucoseValues += GV(
+                timestamp = inputData["date"].toString().toLong(),
+                value = inputData["sgv"].toString().toDouble(),
+                raw = 0.0,
+                noise = null,
+                trendArrow = TrendArrow.fromString(inputData["direction"].toString()),
+                sourceSensor = GlucoseValue.SourceSensor.fromString(inputData["device"].toString())
             )
+            persistenceLayer.insertCgmSourceData(Sources.Firebase, glucoseValues, emptyList(), null)
+                .doOnError { ret = Result.failure(workDataOf("Error" to it.toString())) }
+                .blockingGet()
+            return ret
+        }
     }
 }

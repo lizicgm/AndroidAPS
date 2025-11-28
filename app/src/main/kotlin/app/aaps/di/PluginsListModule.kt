@@ -35,7 +35,7 @@ import app.aaps.plugins.smoothing.AvgSmoothingPlugin
 import app.aaps.plugins.smoothing.ExponentialSmoothingPlugin
 import app.aaps.plugins.smoothing.NoSmoothingPlugin
 import app.aaps.plugins.source.DexcomPlugin
-import app.aaps.plugins.source.FirestoreBGSourcePlugin
+import app.aaps.plugins.source.FirestorePlugin
 import app.aaps.plugins.source.GlimpPlugin
 import app.aaps.plugins.source.GlunovoPlugin
 import app.aaps.plugins.source.IntelligoPlugin
@@ -395,7 +395,7 @@ abstract class PluginsListModule {
     @AllConfigs
     @IntoMap
     @IntKey(411)
-    abstract fun bindFirestoreSourcePlugin(plugin: FirestoreBGSourcePlugin): PluginBase
+    abstract fun bindFirestoreSourcePlugin(plugin: FirestorePlugin): PluginBase
 
     @Binds
     @AllConfigs

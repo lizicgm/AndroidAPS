@@ -37,6 +37,7 @@ interface Intents {
         const val NS_EMULATOR = "com.eveningoutpost.dexdrip.NS_EMULATOR"
         const val ACTION_REMOTE_CALIBRATION = "com.eveningoutpost.dexdrip.NewCalibration"
         const val GLIMP_BG = "it.ct.glicemia.ACTION_GLUCOSE_MEASURED"
+        const val FIRESTORE_BG = "com.firebase.firestore.data"
         const val DEXCOM_BG = "com.dexcom.cgm.EXTERNAL_BROADCAST"
         const val DEXCOM_G7_BG = "com.dexcom.g7.EXTERNAL_BROADCAST"
         const val POCTECH_BG = "com.china.poctech.data"

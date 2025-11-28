@@ -16,6 +16,7 @@ import app.aaps.core.utils.receivers.BundleLogger
 import app.aaps.core.utils.receivers.DataWorkerStorage
 import app.aaps.plugins.main.general.smsCommunicator.SmsCommunicatorPlugin
 import app.aaps.plugins.source.DexcomPlugin
+import app.aaps.plugins.source.FirestorePlugin
 import app.aaps.plugins.source.GlimpPlugin
 import app.aaps.plugins.source.MM640gPlugin
 import app.aaps.plugins.source.OttaiPlugin
@@ -66,6 +67,13 @@ open class DataReceiver : DaggerBroadcastReceiver() {
 
             Intents.NS_EMULATOR                       ->
                 OneTimeWorkRequest.Builder(MM640gPlugin.MM640gWorker::class.java)
+                    .setInputData(Data.Builder().also {
+                        it.copyString("collection", bundle)
+                        it.copyString("data", bundle)
+                    }.build()).build()
+
+            Intents.FIRESTORE_BG                       ->
+                OneTimeWorkRequest.Builder(FirestorePlugin.FirebaseWorker::class.java)
                     .setInputData(Data.Builder().also {
                         it.copyString("collection", bundle)
                         it.copyString("data", bundle)
