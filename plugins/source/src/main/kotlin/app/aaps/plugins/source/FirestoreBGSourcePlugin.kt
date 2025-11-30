@@ -51,7 +51,6 @@ class FirestorePlugin @Inject constructor(
 
         @Inject lateinit var injector: HasAndroidInjector
         @Inject lateinit var firebasePlugin: FirestorePlugin
-        @Inject lateinit var persistenceLayer: PersistenceLayer
 
         private var listener: ListenerRegistration? = null
         private val disposable = CompositeDisposable()
