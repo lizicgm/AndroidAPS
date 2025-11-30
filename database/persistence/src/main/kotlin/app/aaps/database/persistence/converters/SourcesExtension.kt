@@ -80,7 +80,7 @@ fun UserEntry.Sources.fromDb(): Sources =
         UserEntry.Sources.Unknown             -> Sources.Unknown
         UserEntry.Sources.Ottai               -> Sources.Ottai
         UserEntry.Sources.SyaiTag             -> Sources.SyaiTag
-        UserEntry.Sources.Firebase            -> Sources.Firebase
+        UserEntry.Sources.Firestore           -> Sources.Firestore
     }
 
 fun Sources.toDb(): UserEntry.Sources =
@@ -160,6 +160,6 @@ fun Sources.toDb(): UserEntry.Sources =
         Sources.Unknown             -> UserEntry.Sources.Unknown
         Sources.Ottai               -> UserEntry.Sources.Ottai
         Sources.SyaiTag             -> UserEntry.Sources.SyaiTag
-        Sources.Firebase            -> UserEntry.Sources.Firebase
+        Sources.Firestore           -> UserEntry.Sources.Firestore
     }
 
