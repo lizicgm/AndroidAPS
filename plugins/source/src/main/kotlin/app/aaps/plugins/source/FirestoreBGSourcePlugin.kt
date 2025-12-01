@@ -76,7 +76,7 @@ class FirestorePlugin @Inject constructor(
                 trendArrow = TrendArrow.fromString(data["direction"].toString()),
                 sourceSensor = SourceSensor.fromString(data["device"].toString())
             )
-            persistenceLayer.insertCgmSourceData(Sources.Firebase, glucoseValues, emptyList(), null)
+            persistenceLayer.insertCgmSourceData(Sources.Firestore, glucoseValues, emptyList(), null)
                 .doOnError { aapsLogger.error(LTag.FIRESTORE, "Error inserting CGM data", it) }
                 .subscribe()
                 .let { disposable.add(it) }
