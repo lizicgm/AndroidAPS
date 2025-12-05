@@ -21,6 +21,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.QueryDocumentSnapshot
@@ -53,6 +55,12 @@ class FirestorePlugin @Inject constructor(
 
     private var listener: ListenerRegistration? = null
     private val disposable = CompositeDisposable()
+    internal val firestore: FirebaseFirestore by lazy {
+        Firebase.firestore.apply {
+            firestoreSettings = FirebaseFirestoreSettings.Builder()
+                .build()
+        }
+    }
 
     override fun onStart() {
         super.onStart()
@@ -65,7 +73,7 @@ class FirestorePlugin @Inject constructor(
         cal.add(Calendar.MINUTE, -5)
         val startDateMs = cal.timeInMillis
 
-        listener = Firebase.firestore.collection("entries")
+        listener = firestore.collection("entries")
             .whereGreaterThan("date", startDateMs)
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
@@ -98,7 +106,7 @@ class FirestorePlugin @Inject constructor(
         
         aapsLogger.debug(LTag.FIRESTORE, "adding entry")
         val data = document.data
-        aapsLogger.debug(LTag.BGSOURCE, "Received Firestore Data: $data")
+        aapsLogger.debug(LTag.FIRESTORE, "Received Firestore Data: $data")
         
         val glucoseValues = mutableListOf<GV>()
         glucoseValues += GV(
@@ -133,14 +141,14 @@ class FirestorePlugin @Inject constructor(
             if (!firestorePlugin.isEnabled()) return Result.success(workDataOf("Result" to "Plugin not enabled"))
             
             val data = inputData.getString("data")
-            aapsLogger.debug(LTag.BGSOURCE, "Received Firestore Data: $data")
+            aapsLogger.debug(LTag.FIRESTORE, "Received Firestore Data: $data")
             
             if (!data.isNullOrEmpty()) {
                 try {
                     val glucoseValues = mutableListOf<GV>()
                     // Parse the data string as needed - adjust based on your data format
                     // For now, assuming it's a single glucose reading
-                    val document = Firebase.firestore.collection("entries").document(data).get().await()
+                    val document = firestorePlugin.firestore.collection("entries").document(data).get().await()
                     val docData = document.data ?: return Result.failure(workDataOf("Error" to "No data in document"))
                     
                     glucoseValues += GV(
